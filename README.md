@@ -21,8 +21,8 @@ Easy Finetuner는 llama2 계열 모델의 쉬운 fine-tune 방법을 설명하�
 &nbsp;
 ### Usage
 ```
-git clone https://github.com/lxe/simple-llm-finetuner.git
-cd simple-llm-finetuner
+git clone https://github.com/choijhyeok/easy_finetuner.git
+cd easy_finetuner
 pip install -r requirements.txt
 ```
 
