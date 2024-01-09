@@ -4,7 +4,8 @@
 [![Open In Colab](https://img.shields.io/static/v1?label=Open%20in%20Colab&message=사용법&color=yellow&logo=googlecolab)](https://colab.research.google.com/github/lxe/simple-llama-finetuner/blob/master/Simple_LLaMA_FineTuner.ipynb)
 
 
-Easy Finetuner는 llama2 계열 모델의 fine-tune을 쉽게 사용하기 위해서 제작하였습니다. 
+Easy Finetuner는 llama2 계열 모델의 쉬운 fine-tune 방법을 설명하기 위해서 제작하였습니다. 
+
 
 &nbsp;
 
