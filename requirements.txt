@@ -1,0 +1,9 @@
+loralib
+sentencepiece
+git+https://github.com/huggingface/peft.git
+gradio==3.48.0
+accelerate==0.21.0
+bitsandbytes==0.40.2
+transformers==4.31.0
+trl==0.4.7
+jsonlines
