@@ -7,6 +7,8 @@
 Easy Finetuner는 llama2 계열 모델의 쉬운 fine-tune 방법을 설명하기 위해서 제작하였습니다. 
 
 
+(발표영상 : https://www.youtube.com/live/4I9AUFuBlFs?feature=shared)
+
 &nbsp;
 
 ## 주의사항
