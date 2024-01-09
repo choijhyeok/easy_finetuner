@@ -183,7 +183,10 @@ class UI():
 
         examples_dir = os.path.join(os.getcwd(), 'example-datasets')
         if os.path.exists(f'{examples_dir}/.ipynb_checkpoints'):
-          shutil.rmtree(f'{examples_dir}/.ipynb_checkpoints')
+          try:
+            os.remove(f'{examples_dir}/.ipynb_checkpoints')
+          except:
+            shutil.rmtree(f'{examples_dir}/.ipynb_checkpoints')
 
         def load_example(filename):
           example_data = load_from_disk(f"{examples_dir}/{filename}")
