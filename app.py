@@ -183,10 +183,7 @@ class UI():
 
         examples_dir = os.path.join(os.getcwd(), 'example-datasets')
         if os.path.exists(f'{examples_dir}/.ipynb_checkpoints'):
-          try:
-            os.remove(f'{examples_dir}/.ipynb_checkpoints')
-          except:
-            shutil.rmtree(f'{examples_dir}/.ipynb_checkpoints')
+          shutil.rmtree(f'{examples_dir}/.ipynb_checkpoints')
 
         def load_example(filename):
           example_data = load_from_disk(f"{examples_dir}/{filename}")
@@ -198,7 +195,7 @@ class UI():
 
 
         example_filename = gr.Textbox(label='dataset_name')
-        gen_btn = gr.Button()
+        gen_btn = gr.Button('Dataset Load')
 
 
 
@@ -237,7 +234,7 @@ class UI():
                 self.new_lora_name = gr.Textbox(label='llama2 Adapter Name', value=random_name())
             with gr.Column():
                 train_button = gr.Button('Train', variant='primary')
-                abort_button = gr.Button('Abort')
+                abort_button = gr.Button('Reset')
 
         def train(
             training_text,
@@ -482,4 +479,3 @@ class UI():
 if (__name__ == '__main__'):
     ui = UI()
     ui.run()
-
