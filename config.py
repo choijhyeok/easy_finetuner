@@ -77,9 +77,9 @@ parser.add_argument('--model', type=str, default='meta-llama/Llama-2-7b-hf', hel
 
 
 # GENERATION_PARAMS
-parser.add_argument('--max_length', type=int, default=45 , help='max_length 설정')
-parser.add_argument('--top_p', type=float, default=0.3 , help='top_p 설정')
-parser.add_argument('--top_k', type=int, default=10, help='top_k 설정')
+parser.add_argument('--max_length', type=int, default=150 , help='max_length 설정')
+parser.add_argument('--top_p', type=float, default=0 , help='top_p 설정')
+parser.add_argument('--top_k', type=int, default=3, help='top_k 설정')
 parser.add_argument('--temperature', type=float, default=0.1, help='temperature 설정')
 
 args = parser.parse_args()
