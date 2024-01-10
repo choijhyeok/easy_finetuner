@@ -31,6 +31,19 @@ from config import (
 )
 from trl import SFTTrainer
 
+
+def llama2_prompt(input_text):
+  return f'### Instruction:\n{input_text}\n\n### Response:'
+
+def llama2_output(ouput_text):
+  sep = ouput_text[0]['generated_text'].split('### Response:')[1].split('### Instruction')[0].split('## Instruction')[0].split('# Instruction')[0].split('Instruction')[0]
+  sep = sep[1:] if sep[0] == '.' else sep
+  sep = sep[:sep.find('.')+1] if '.' in sep else sep
+  return sep.strip()
+
+
+
+
 class Trainer():
     def __init__(self):
         self.model = None
@@ -138,8 +151,37 @@ class Trainer():
 
         kwargs = { **GENERATION_PARAMS, **kwargs }
 
-        inputs = self.tokenizer(f"<s>[INST] {str(prompt)} [/INST]", return_tensors="pt")
-        input_ids = inputs["input_ids"].to(self.model.device)
+        # inputs = self.tokenizer(prompt, return_tensors="pt")
+        # input_ids = inputs["input_ids"].to(self.model.device)
+
+        # print(GENERATION_PARAMS)
+        # print('-'*10)
+        # print(kwargs)
+
+
+        # {'max_length': 45, 'top_p': 0, 'top_k': 3, 'temperature': 0.1, 'do_sample': True, 'max_new_tokens': 150, 'repetition_penalty': 1.5}
+        pipe = pipeline(task="text-generation",
+                model=self.model,
+                tokenizer=self.tokenizer,
+                max_length=kwargs['max_length'],
+                do_sample=True,
+                temperature=kwargs['temperature'],
+                num_return_sequences=1,
+                eos_token_id=self.tokenizer.eos_token_id,
+                top_k=kwargs['top_k'],
+                top_p=kwargs['top_p'],
+                repetition_penalty = kwargs['repetition_penalty'],
+                framework='pt')
+
+        disable_lora = nullcontext()
+        if self.lora_name is None and hasattr(self.model, 'disable_adapter'):
+            disable_lora = self.model.disable_adapter()
+
+        
+        result = pipe(llama2_prompt(prompt))
+        # print(result)
+        return llama2_output(result)
+
 
         # if self.model.config.pad_token_id is None:
         #     kwargs['pad_token_id'] = self.model.config.eos_token_id
@@ -147,23 +189,21 @@ class Trainer():
         # if (kwargs['do_sample']):
         #     del kwargs['num_beams']
 
-        generation_config = transformers.GenerationConfig(
-            use_cache=False,
-            **kwargs
-        )
+        # generation_config = transformers.GenerationConfig(
+        #     use_cache=False,
+        #     **kwargs
+        # )
 
-        disable_lora = nullcontext()
-        if self.lora_name is None and hasattr(self.model, 'disable_adapter'):
-            disable_lora = self.model.disable_adapter()
 
-        with torch.no_grad(), disable_lora:
-            output = self.model.generate(
-                input_ids=input_ids,
-                attention_mask=torch.ones_like(input_ids),
-                generation_config=generation_config
-            )[0].to(self.model.device)
 
-        return self.tokenizer.decode(output, skip_special_tokens=True).strip().split('[/INST]')[-1].strip()
+        # with torch.no_grad(), disable_lora:
+        #     output = self.model.generate(
+        #         input_ids=input_ids,
+        #         attention_mask=torch.ones_like(input_ids),
+        #         generation_config=generation_config
+        #     )[0].to(self.model.device)
+
+        # return self.tokenizer.decode(output, skip_special_tokens=True)
 
 
     def train(self, training_text=None, new_peft_model_name=None, **kwargs):
