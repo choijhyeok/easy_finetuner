@@ -1,7 +1,7 @@
 
 # Easy Finetuner
 
-[![Open In Colab](https://img.shields.io/static/v1?label=Open%20in%20Colab&message=사용법&color=yellow&logo=googlecolab)]([https://colab.research.google.com/github/lxe/simple-llama-finetuner/blob/master/Simple_LLaMA_FineTuner.ipynb](https://colab.research.google.com/github/choijhyeok/easy_finetuner/blob/main/%EA%B0%9C%EC%9D%B8_%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%85%8B%EC%9D%84_%ED%86%B5%ED%95%9C_llama2_fine_tune.ipynb))
+[![Open In Colab](https://img.shields.io/static/v1?label=Open%20in%20Colab&message=사용법&color=yellow&logo=googlecolab)]([https://colab.research.google.com/github/choijhyeok/easy_finetuner/blob/main/%EA%B0%9C%EC%9D%B8_%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%85%8B%EC%9D%84_%ED%86%B5%ED%95%9C_llama2_fine_tune.ipynb])
 
 
 &nbsp;
