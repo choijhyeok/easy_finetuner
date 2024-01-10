@@ -183,7 +183,10 @@ class UI():
 
         examples_dir = os.path.join(os.getcwd(), 'example-datasets')
         if os.path.exists(f'{examples_dir}/.ipynb_checkpoints'):
-          shutil.rmtree(f'{examples_dir}/.ipynb_checkpoints')
+          try:
+            os.remove(f'{examples_dir}/.ipynb_checkpoints')
+          except:
+            shutil.rmtree(f'{examples_dir}/.ipynb_checkpoints')
 
         def load_example(filename):
           example_data = load_from_disk(f"{examples_dir}/{filename}")
@@ -234,7 +237,7 @@ class UI():
                 self.new_lora_name = gr.Textbox(label='llama2 Adapter Name', value=random_name())
             with gr.Column():
                 train_button = gr.Button('Train', variant='primary')
-                abort_button = gr.Button('Reset')
+                # abort_button = gr.Button('Reset')
 
         def train(
             training_text,
@@ -296,17 +299,17 @@ class UI():
         #     outputs=[]
         # )
 
-        def abort(progress=gr.Progress(track_tqdm=True)):
-            print('Aborting training...')
-            self.trainer.abort_training()
-            return self.new_lora_name.value
+        # def abort(progress=gr.Progress(track_tqdm=True)):
+        #     print('Aborting training...')
+        #     self.trainer.abort_training()
+        #     return self.new_lora_name.value
 
-        abort_button.click(
-            fn=abort,
-            inputs=None,
-            outputs=[self.new_lora_name],
-            cancels=[train_event]
-        )
+        # abort_button.click(
+        #     fn=abort,
+        #     inputs=None,
+        #     outputs=[self.new_lora_name],
+        #     cancels=[train_event]
+        # )
 
     def inference_block(self):
         with gr.Row():
@@ -344,9 +347,9 @@ class UI():
 
                 with gr.Row():
                     with gr.Column():
-                        self.max_new_tokens = gr.Slider(
+                        self.max_length = gr.Slider(
                             minimum=0, maximum=4096, step=1, value=GENERATION_PARAMS['max_length'],
-                            label="max_new_tokens 설정",
+                            label="max_length 설정",
                         )
                     with gr.Column():
                         self.do_sample = gr.Checkbox(
@@ -392,7 +395,7 @@ class UI():
             def generate(
                 prompt,
                 do_sample,
-                max_new_tokens,
+                max_length,
 #                num_beams,
                repeat_penalty,
                 temperature,
@@ -403,7 +406,7 @@ class UI():
                 return self.trainer.generate(
                     prompt,
                     do_sample=do_sample,
-                    max_new_tokens=max_new_tokens,
+                    max_length=max_length,
 #                    num_beams=num_beams,
                     repetition_penalty=repeat_penalty,
                     temperature=temperature,
@@ -416,7 +419,7 @@ class UI():
                 inputs=[
                     self.prompt,
                     self.do_sample,
-                    self.max_new_tokens,
+                    self.max_length,
 #                    self.num_beams,
                     self.repeat_penalty,
                     self.temperature,
@@ -431,8 +434,7 @@ class UI():
             with gr.Row():
                 with gr.Column():
                     gr.HTML("""<h2>
-                    <a style="text-decoration: none;" href="https://github.com/lxe/simple-llama-finetuner">Simple llama2 Finetuner with free T4 GPU</a>&nbsp;<a href="https://huggingface.co/spaces/lxe/simple-llama-finetuner?duplicate=true"><img
-                    src="https://img.shields.io/badge/-Duplicate%20Space-blue?labelColor=white&amp;style=flat&amp;logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAP5JREFUOE+lk7FqAkEURY+ltunEgFXS2sZGIbXfEPdLlnxJyDdYB62sbbUKpLbVNhyYFzbrrA74YJlh9r079973psed0cvUD4A+4HoCjsA85X0Dfn/RBLBgBDxnQPfAEJgBY+A9gALA4tcbamSzS4xq4FOQAJgCDwV2CPKV8tZAJcAjMMkUe1vX+U+SMhfAJEHasQIWmXNN3abzDwHUrgcRGmYcgKe0bxrblHEB4E/pndMazNpSZGcsZdBlYJcEL9Afo75molJyM2FxmPgmgPqlWNLGfwZGG6UiyEvLzHYDmoPkDDiNm9JR9uboiONcBXrpY1qmgs21x1QwyZcpvxt9NS09PlsPAAAAAElFTkSuQmCC&amp;logoWidth=14" style="display:inline">
+                    <a style="text-decoration: none;" href="https://github.com/choijhyeok/easy_finetuner">Easy Finetuner with free T4 GPU</a>&nbsp;
                     </a></h2><p>무료 colab 기준 GPU인 T4에서 fine-tune을 수행할수 있게 만든 Gradio</p>""")
                 with gr.Column():
                   with gr.Row():
@@ -448,27 +450,27 @@ class UI():
                         self.training_params_block()
                         self.training_launch_block(HF_token, dataset_name)
 
-            # with gr.Tab('Inference') as inference_tab:
-            #     with gr.Row():
-            #         with gr.Column():
-            #             self.inference_block()
+            with gr.Tab('Inference') as inference_tab:
+                with gr.Row():
+                    with gr.Column():
+                        self.inference_block()
 
-            # inference_tab.select(
-            #     fn=self.load_loras,
-            #     inputs=[],
-            #     outputs=[self.lora_name]
-            # )
+            inference_tab.select(
+                fn=self.load_loras,
+                inputs=[],
+                outputs=[self.lora_name]
+            )
 
             self.model_name.change(
                 fn=self.load_model,
                 inputs=[self.model_name, HF_token],
                 outputs=[self.model_name]
+            
+            ).then(
+                fn=self.load_loras,
+                inputs=[],
+                outputs=[self.lora_name]
             )
-            # ).then(
-            #     fn=self.load_loras,
-            #     inputs=[],
-            #     outputs=[self.lora_name]
-            # )
 
         return demo
 
